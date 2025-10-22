@@ -75,10 +75,10 @@ export default function Home() {
 
   return (
     <main className='relative h-screen w-full overflow-hidden'>
-      {/* Language Toggle */}
+      {/* Language Toggle - adjust untuk mobile agar tidak tindih timer */}
       <button
         onClick={toggleLanguage}
-        className='fixed right-4 top-4 z-50 rounded-full bg-white px-4 py-2 text-sm font-bold text-indigo-600 shadow-lg transition-all hover:scale-110 hover:bg-indigo-50 active:scale-95 sm:right-6 sm:top-6 sm:px-6 sm:py-3 sm:text-base'
+        className='fixed right-4 top-20 z-50 rounded-full bg-white px-4 py-2 text-sm font-bold text-indigo-600 shadow-lg transition-all hover:scale-110 hover:bg-indigo-50 active:scale-95 sm:right-6 sm:top-6 sm:px-6 sm:py-3 sm:text-base'
       >
         {language === 'en' ? '🇮🇩 ID' : '🇬🇧 EN'}
       </button>
@@ -112,10 +112,10 @@ export default function Home() {
             translations={translations}
             feedback={null}
           />
-          {/* Level indicator */}
-          <div className='pointer-events-none fixed left-4 top-4 z-10 rounded-2xl bg-indigo-600 px-6 py-3 shadow-lg sm:left-6 sm:top-6'>
-            <div className='text-sm font-bold text-white'>LEVEL 1</div>
-            <div className='text-xs text-indigo-200'>3D Hunt</div>
+          {/* Level indicator - pindah ke tengah atas agar tidak tindih score */}
+          <div className='pointer-events-none fixed left-1/2 top-4 z-10 -translate-x-1/2 rounded-2xl bg-indigo-600 px-6 py-3 shadow-lg sm:top-6'>
+            <div className='text-center text-sm font-bold text-white'>LEVEL 1</div>
+            <div className='text-center text-xs text-indigo-200'>3D Hunt</div>
           </div>
         </>
       )}

@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Background circle -->
+  <circle cx="50" cy="50" r="48" fill="#6366f1"/>
+  
+  <!-- Game controller -->
+  <g transform="translate(50, 50)">
+    <!-- Controller body -->
+    <path d="M -25 -8 Q -30 -10, -32 -5 L -35 10 Q -35 15, -30 15 L -15 15 L -10 20 Q -8 22, -5 22 L 5 22 Q 8 22, 10 20 L 15 15 L 30 15 Q 35 15, 35 10 L 32 -5 Q 30 -10, 25 -8 Z" 
+          fill="#ffffff" stroke="#e0e0e0" stroke-width="1"/>
+    
+    <!-- D-Pad -->
+    <!-- Up -->
+    <rect x="-22" y="-5" width="4" height="6" fill="#6366f1" rx="1"/>
+    <!-- Down -->
+    <rect x="-22" y="4" width="4" height="6" fill="#6366f1" rx="1"/>
+    <!-- Left -->
+    <rect x="-25" y="1" width="6" height="4" fill="#6366f1" rx="1"/>
+    <!-- Right -->
+    <rect x="-16" y="1" width="6" height="4" fill="#6366f1" rx="1"/>
+    
+    <!-- Action buttons -->
+    <!-- A button -->
+    <circle cx="18" cy="5" r="3" fill="#22c55e"/>
+    <text x="18" y="7" font-size="4" fill="white" text-anchor="middle" font-weight="bold">A</text>
+    
+    <!-- B button -->
+    <circle cx="25" cy="0" r="3" fill="#ef4444"/>
+    <text x="25" y="2" font-size="4" fill="white" text-anchor="middle" font-weight="bold">B</text>
+    
+    <!-- Start button -->
+    <rect x="-3" y="8" width="6" height="2" fill="#9333ea" rx="1"/>
+    
+    <!-- 3D effect - shadows -->
+    <ellipse cx="0" cy="23" rx="28" ry="3" fill="#000000" opacity="0.2"/>
+  </g>
+  
+  <!-- Game icon - 3D cube at top -->
+  <g transform="translate(75, 25)">
+    <polygon points="0,-5 5,0 0,5 -5,0" fill="#fbbf24"/>
+    <polygon points="0,-5 5,0 5,8 0,3" fill="#f59e0b"/>
+    <polygon points="0,-5 -5,0 -5,8 0,3" fill="#fcd34d"/>
+  </g>
+</svg>
+

@@ -28,6 +28,12 @@ export const metadata: Metadata = {
     title: "Product Hunt 3D: Room of ILMAN BAIHAQI",
     description: "Interactive 2-level game with 3D object hunt and frontend quiz",
     type: "website",
+    siteName: "Product Hunt 3D",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Product Hunt 3D: Room of ILMAN BAIHAQI",
+    description: "Interactive 2-level game with 3D object hunt and frontend quiz",
   },
 };
 

@@ -19,7 +19,15 @@ export const metadata: Metadata = {
   authors: [{ name: "ILMAN BAIHAQI" }],
   creator: "ILMAN BAIHAQI",
   icons: {
-    icon: '/icon.svg',
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/icon.svg', type: 'image/svg+xml' },
+    ],
+  },
+  openGraph: {
+    title: "Product Hunt 3D: Room of ILMAN BAIHAQI",
+    description: "Interactive 2-level game with 3D object hunt and frontend quiz",
+    type: "website",
   },
 };
 

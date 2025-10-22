@@ -1,65 +1,173 @@
-import Image from "next/image";
+'use client';
+
+import { useState, useCallback } from 'react';
+import { AnimatePresence } from 'framer-motion';
+import { useGameLogic } from '@/hooks/useGameLogic';
+import { en } from '@/locales/en';
+import { id } from '@/locales/id';
+import { quizQuestions } from '@/data/quizQuestions';
+import StartScreen from '@/components/StartScreen';
+import EndScreen from '@/components/EndScreen';
+import Leaderboard from '@/components/Leaderboard';
+import UIOverlay from '@/components/UIOverlay';
+import QuizScreen from '@/components/QuizScreen';
+
+// Import GameCanvas statically - no dynamic import to prevent remount
+import GameCanvas from '@/components/GameCanvas';
+
+type Language = 'en' | 'id';
+type Screen = 'game' | 'leaderboard';
 
 export default function Home() {
+  const [language, setLanguage] = useState<Language>('en');
+  const [screen, setScreen] = useState<Screen>('game');
+  const [canvasLoaded, setCanvasLoaded] = useState(false);
+
+  const {
+    gameState,
+    level1Score,
+    level2Score,
+    totalScore,
+    timeLeft,
+    products,
+    targetProduct,
+    foundProducts,
+    startGame,
+    handleProductClick,
+    completeQuiz,
+    saveToLeaderboard,
+    getLeaderboard,
+    resetGame,
+  } = useGameLogic();
+
+  const translations = language === 'en' ? en : id;
+
+  const handleProductClickWithFeedback = useCallback(
+    (id: string) => {
+      const result = handleProductClick(id);
+
+      if (result.alreadyFound) return result;
+
+      // Simplified feedback - no state update that causes re-render
+      if (result.correct) {
+        console.log('✅ Correct!');
+      } else {
+        console.log('❌ Wrong!');
+      }
+
+      return result;
+    },
+    [handleProductClick]
+  );
+
+  const handleViewLeaderboard = useCallback(() => {
+    setScreen('leaderboard');
+  }, []);
+
+  const handleBackToGame = useCallback(() => {
+    setScreen('game');
+    resetGame();
+  }, [resetGame]);
+
+  const toggleLanguage = () => {
+    setLanguage((prev) => (prev === 'en' ? 'id' : 'en'));
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <main className='relative h-screen w-full overflow-hidden'>
+      {/* Language Toggle */}
+      <button
+        onClick={toggleLanguage}
+        className='fixed right-4 top-4 z-50 rounded-full bg-white px-4 py-2 text-sm font-bold text-indigo-600 shadow-lg transition-all hover:scale-110 hover:bg-indigo-50 active:scale-95 sm:right-6 sm:top-6 sm:px-6 sm:py-3 sm:text-base'
+      >
+        {language === 'en' ? '🇮🇩 ID' : '🇬🇧 EN'}
+      </button>
+
+      {/* 3D Canvas - Mount once on first level1, never unmount */}
+      {(gameState === 'level1' || canvasLoaded) && (
+        <div
+          style={{
+            display: gameState === 'level1' ? 'block' : 'none',
+            width: '100%',
+            height: '100vh',
+          }}
+          onLoad={() => setCanvasLoaded(true)}
+        >
+          <GameCanvas
+            products={products}
+            targetProduct={targetProduct}
+            foundProducts={foundProducts}
+            onProductClick={handleProductClickWithFeedback}
+          />
+        </div>
+      )}
+
+      {/* UI Overlay for Level 1 */}
+      {gameState === 'level1' && (
+        <>
+          <UIOverlay
+            score={level1Score}
+            timeLeft={timeLeft}
+            targetProductName={targetProduct?.name || ''}
+            translations={translations}
+            feedback={null}
+          />
+          {/* Level indicator */}
+          <div className='pointer-events-none fixed left-4 top-4 z-10 rounded-2xl bg-indigo-600 px-6 py-3 shadow-lg sm:left-6 sm:top-6'>
+            <div className='text-sm font-bold text-white'>LEVEL 1</div>
+            <div className='text-xs text-indigo-200'>3D Hunt</div>
+          </div>
+        </>
+      )}
+
+      {/* Level 2 - Quiz */}
+      {gameState === 'level2' && screen === 'game' && (
+        <QuizScreen
+          questions={quizQuestions}
+          onQuizComplete={completeQuiz}
+          translations={translations}
+          language={language}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      )}
+
+      {/* Background for non-playing states */}
+      {gameState !== 'level1' && gameState !== 'level2' && (
+        <div className='absolute inset-0 bg-linear-to-br from-sky-200 to-indigo-400' />
+      )}
+
+      {/* Screens */}
+      <AnimatePresence mode='wait'>
+        {gameState === 'start' && screen === 'game' && (
+          <StartScreen
+            key='start'
+            onStart={startGame}
+            translations={translations}
+          />
+        )}
+
+        {gameState === 'end' && screen === 'game' && (
+          <EndScreen
+            key='end'
+            score={totalScore}
+            level1Score={level1Score}
+            level2Score={level2Score}
+            timeLeft={timeLeft}
+            onPlayAgain={resetGame}
+            onViewLeaderboard={handleViewLeaderboard}
+            translations={translations}
+            saveToLeaderboard={saveToLeaderboard}
+          />
+        )}
+
+        {screen === 'leaderboard' && (
+          <Leaderboard
+            key='leaderboard'
+            entries={getLeaderboard()}
+            onClose={handleBackToGame}
+            translations={translations}
+          />
+        )}
+      </AnimatePresence>
+    </main>
   );
 }
